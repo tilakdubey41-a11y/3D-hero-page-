@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Phorcysty — AI Color Transfer</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="color-section">
+
+        <!-- Background glow -->
+        <div class="ambient ambient-one"></div>
+        <div class="ambient ambient-two"></div>
+
+        <!-- HEADER -->
+        <div class="section-heading">
+            <span class="eyebrow">PHORCYSTY AI</span>
+
+            <h1>
+                Transform your
+                <span>colors.</span>
+            </h1>
+
+            <p>
+                Choose a reference and see how Phorcysty
+                transforms the colors of your image.
+            </p>
+        </div>
+
+
+        <!-- MAIN 3D STAGE -->
+        <section class="transfer-stage">
+
+            <!-- LEFT REFERENCE PANEL -->
+            <div class="reference-panel">
+
+                <div class="panel-title">
+                    <span>01</span>
+                    <div>
+                        <small>COLOR REFERENCE</small>
+                        <h3>Choose a look</h3>
+                    </div>
+                </div>
+
+
+                <div class="references">
+
+                    <!-- REFERENCE 1 -->
+                    <button
+                        class="reference active"
+                        data-filter="warm"
+                        type="button"
+                    >
+
+                        <div class="reference-image warm-reference">
+                            <img
+                                src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=85"
+                                alt="Warm color reference"
+                            >
+                        </div>
+
+                        <div class="reference-info">
+                            <span>01</span>
+                            <strong>Warm Sunset</strong>
+                        </div>
+
+                    </button>
+
+
+                    <!-- REFERENCE 2 -->
+                    <button
+                        class="reference"
+                        data-filter="blue"
+                        type="button"
+                    >
+
+                        <div class="reference-image blue-reference">
+                            <img
+                                src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=700&q=85"
+                                alt="Blue color reference"
+                            >
+                        </div>
+
+                        <div class="reference-info">
+                            <span>02</span>
+                            <strong>Ocean Blue</strong>
+                        </div>
+
+                    </button>
+
+
+                    <!-- REFERENCE 3 -->
+                    <button
+                        class="reference"
+                        data-filter="purple"
+                        type="button"
+                    >
+
+                        <div class="reference-image purple-reference">
+                            <img
+                                src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=85"
+                                alt="Purple color reference"
+                            >
+                        </div>
+
+                        <div class="reference-info">
+                            <span>03</span>
+                            <strong>Night Purple</strong>
+                        </div>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CENTER COMPARISON -->
+            <div class="comparison-area">
+
+                <div class="comparison-card" id="comparisonCard">
+
+                    <!-- AFTER -->
+                    <div class="image-layer after-layer">
+
+                        <img
+                            class="after-image"
+                            src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=90"
+                            alt="After color transfer"
+                        >
+
+                    </div>
+
+
+                    <!-- BEFORE -->
+                    <div class="image-layer before-layer">
+
+                        <img
+                            class="before-image"
+                            src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=90"
+                            alt="Before color transfer"
+                        >
+
+                    </div>
+
+
+                    <!-- LABELS -->
+                    <div class="label before-label">
+                        BEFORE
+                    </div>
+
+                    <div class="label after-label">
+                        AFTER
+                    </div>
+
+
+                    <!-- SLIDER LINE -->
+                    <div class="slider-line">
+
+                        <div class="slider-handle">
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- ACTUAL RANGE -->
+                    <input
+                        type="range"
+                        id="comparisonSlider"
+                        min="0"
+                        max="100"
+                        value="50"
+                        aria-label="Before and after comparison"
+                    >
+
+                </div>
+
+
+                <div class="comparison-caption">
+
+                    <div>
+                        <span class="dot"></span>
+                        AI COLOR TRANSFER
+                    </div>
+
+                    <span>
+                        Drag to compare
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT INFO -->
+            <div class="result-panel">
+
+                <div class="result-number">
+                    02
+                </div>
+
+                <span class="result-label">
+                    TRANSFORMATION
+                </span>
+
+                <h2>
+                    Same image.
+                    <br>
+                    <span>New colors.</span>
+                </h2>
+
+                <p>
+                    Phorcysty analyzes the selected reference
+                    and recreates its visual color atmosphere
+                    on your image.
+                </p>
+
+
+                <div class="result-feature">
+
+                    <div class="feature-icon">
+                        ✦
+                    </div>
+
+                    <div>
+                        <strong>One-tap transfer</strong>
+                        <span>AI powered color transformation</span>
+                    </div>
+
+                </div>
+
+
+                <button class="try-button" type="button">
+                    Try Color Transfer
+                    <span>↗</span>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- BOTTOM PROCESS -->
+        <div class="process">
+
+            <div class="process-item active">
+                <span>01</span>
+                <div>
+                    <strong>Choose Reference</strong>
+                    <small>Select any visual style</small>
+                </div>
+            </div>
+
+            <div class="process-line"></div>
+
+            <div class="process-item">
+                <span>02</span>
+                <div>
+                    <strong>AI Analysis</strong>
+                    <small>Phorcysty reads the colors</small>
+                </div>
+            </div>
+
+            <div class="process-line"></div>
+
+            <div class="process-item">
+                <span>03</span>
+                <div>
+                    <strong>Transform</strong>
+                    <small>Get your new look</small>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
