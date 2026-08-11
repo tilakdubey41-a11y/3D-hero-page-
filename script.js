@@ -1,189 +1,336 @@
-// --- 1. 3D Tilt Effect ---
-const stageContainer = document.getElementById('stageContainer');
-const viewportCard = document.getElementById('viewportCard');
+import * as THREE from "three";
 
-stageContainer.addEventListener('mousemove', (e) => {
-  const rect = stageContainer.getBoundingClientRect();
-  const x = e.clientX - rect.left - rect.width / 2;
-  const y = e.clientY - rect.top - rect.height / 2;
 
-  const rotateX = (-y / rect.height) * 12;
-  const rotateY = (x / rect.width) * 12;
+/* =========================================
+   BASIC SETUP
+========================================= */
 
-  viewportCard.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-});
+const container =
+    document.getElementById("earth-container");
 
-stageContainer.addEventListener('mouseleave', () => {
-  viewportCard.style.transform = `rotateX(0deg) rotateY(0deg)`;
-});
+const scene =
+    new THREE.Scene();
 
-// --- 2. Interactive Canvas Cloth Physics & Car Rendering ---
-const canvas = document.getElementById('clothCanvas');
-const ctx = canvas.getContext('2d');
-const revealBadge = document.getElementById('revealBadge');
 
-let width, height;
-let isDragging = false;
-let revealProgress = 0; // 0% to 100%
+/* =========================================
+   CAMERA
+========================================= */
 
-function resizeCanvas() {
-  const rect = canvas.parentNode.getBoundingClientRect();
-  canvas.width = rect.width;
-  canvas.height = rect.height;
-  width = canvas.width;
-  height = canvas.height;
-  renderStage();
-}
+const camera =
+    new THREE.PerspectiveCamera(
+        42,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+    );
 
-window.addEventListener('resize', resizeCanvas);
+camera.position.z = 5.2;
 
-// Canvas-drawn Mustang Silhouette & Studio Environment
-function drawMustang(isGold) {
-  // Studio Gradient
-  const bgGrad = ctx.createRadialGradient(width/2, height/2, 50, width/2, height/2, width*0.7);
-  bgGrad.addColorStop(0, isGold ? '#1f1608' : '#111115');
-  bgGrad.addColorStop(1, '#050508');
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(0, 0, width, height);
 
-  // Car Silhouette Studio Spotlights
-  ctx.save();
-  ctx.translate(width / 2, height / 2 + 20);
+/* =========================================
+   RENDERER
+========================================= */
 
-  // Body Outline
-  ctx.beginPath();
-  ctx.moveTo(-320, 40);
-  ctx.quadraticCurveTo(-300, -20, -180, -35); // Front hood
-  ctx.quadraticCurveTo(-80, -90, 40, -90);   // Roof
-  ctx.quadraticCurveTo(180, -85, 280, 0);     // Fastback rear slope
-  ctx.quadraticCurveTo(320, 20, 330, 50);    // Rear bumper
-  ctx.lineTo(-320, 50);
-  ctx.closePath();
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+    });
 
-  // Color fill
-  const carGrad = ctx.createLinearGradient(-320, 0, 330, 0);
-  if (isGold) {
-    carGrad.addColorStop(0, '#e5a93c');
-    carGrad.addColorStop(0.5, '#ffd275');
-    carGrad.addColorStop(1, '#8a5810');
-  } else {
-    carGrad.addColorStop(0, '#4a4d55');
-    carGrad.addColorStop(0.5, '#888c95');
-    carGrad.addColorStop(1, '#22242a');
-  }
-  ctx.fillStyle = carGrad;
-  ctx.fill();
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
 
-  // Wheels
-  ctx.fillStyle = '#08080a';
-  ctx.beginPath();
-  ctx.arc(-190, 50, 45, 0, Math.PI * 2);
-  ctx.arc(190, 50, 45, 0, Math.PI * 2);
-  ctx.fill();
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
 
-  ctx.strokeStyle = isGold ? '#e5a93c' : '#aaaaaa';
-  ctx.lineWidth = 3;
-  ctx.stroke();
+renderer.outputColorSpace =
+    THREE.SRGBColorSpace;
 
-  // Windows & Highlights
-  ctx.fillStyle = isGold ? '#fffae6' : '#ffffff';
-  ctx.globalAlpha = 0.8;
-  ctx.beginPath();
-  ctx.moveTo(-70, -75);
-  ctx.lineTo(30, -75);
-  ctx.lineTo(110, -30);
-  ctx.lineTo(-70, -30);
-  ctx.closePath();
-  ctx.fill();
-  ctx.globalAlpha = 1.0;
+renderer.toneMapping =
+    THREE.ACESFilmicToneMapping;
 
-  ctx.restore();
-}
+renderer.toneMappingExposure = 1.05;
 
-function renderStage() {
-  ctx.clearRect(0, 0, width, height);
+container.appendChild(
+    renderer.domElement
+);
 
-  // 1. Base Layer: AI Color Graded Gold Mustang
-  drawMustang(true);
 
-  // 2. Top Layer: Cloth Covered / Monochromatic Car
-  if (revealProgress < 100) {
-    ctx.save();
+/* =========================================
+   EARTH GROUP
+========================================= */
 
-    const revealX = (revealProgress / 100) * (width * 1.4);
+const earthGroup =
+    new THREE.Group();
 
-    // Clip Unrevealed Portion
-    ctx.beginPath();
-    ctx.moveTo(revealX, 0);
-    ctx.lineTo(width, 0);
-    ctx.lineTo(width, height);
-    ctx.lineTo(Math.max(0, revealX - height * 0.5), height);
-    ctx.closePath();
-    ctx.clip();
+scene.add(earthGroup);
 
-    // Draw Dark Raw Covered Car
-    drawMustang(false);
 
-    // Fabric Texture Overlay / Crease Folds
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.lineWidth = 2;
-    for (let i = -width; i < width * 2; i += 40) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i + 150, height);
-      ctx.stroke();
+/* =========================================
+   EARTH TEXTURES
+========================================= */
+
+const loader =
+    new THREE.TextureLoader();
+
+const earthTexture =
+    loader.load(
+        "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
+    );
+
+const earthNormal =
+    loader.load(
+        "https://threejs.org/examples/textures/planets/earth_normal_2048.jpg"
+    );
+
+const earthSpecular =
+    loader.load(
+        "https://threejs.org/examples/textures/planets/earth_specular_2048.jpg"
+    );
+
+
+/* =========================================
+   EARTH
+========================================= */
+
+const earthGeometry =
+    new THREE.SphereGeometry(
+        1.65,
+        96,
+        96
+    );
+
+const earthMaterial =
+    new THREE.MeshPhongMaterial({
+
+        map: earthTexture,
+
+        normalMap: earthNormal,
+
+        specularMap: earthSpecular,
+
+        specular:
+            new THREE.Color(0x222222),
+
+        shininess: 8
+    });
+
+
+const earth =
+    new THREE.Mesh(
+        earthGeometry,
+        earthMaterial
+    );
+
+
+earthGroup.add(earth);
+
+
+/* =========================================
+   ATMOSPHERE
+========================================= */
+
+const atmosphereGeometry =
+    new THREE.SphereGeometry(
+        1.72,
+        96,
+        96
+    );
+
+
+const atmosphereMaterial =
+    new THREE.MeshBasicMaterial({
+
+        color: 0x3f9cff,
+
+        transparent: true,
+
+        opacity: 0.09,
+
+        side: THREE.BackSide
+    });
+
+
+const atmosphere =
+    new THREE.Mesh(
+        atmosphereGeometry,
+        atmosphereMaterial
+    );
+
+
+earthGroup.add(atmosphere);
+
+
+/* =========================================
+   LIGHTING
+========================================= */
+
+const sunLight =
+    new THREE.DirectionalLight(
+        0xffffff,
+        3.2
+    );
+
+
+sunLight.position.set(
+    -4,
+    2,
+    5
+);
+
+scene.add(sunLight);
+
+
+const blueLight =
+    new THREE.PointLight(
+        0x2f75ff,
+        1.2,
+        10
+    );
+
+
+blueLight.position.set(
+    3,
+    -2,
+    -3
+);
+
+scene.add(blueLight);
+
+
+const ambientLight =
+    new THREE.AmbientLight(
+        0x304060,
+        0.28
+    );
+
+scene.add(ambientLight);
+
+
+/* =========================================
+   MOUSE CONTROL
+========================================= */
+
+let targetX = 0;
+let targetY = 0;
+
+let currentX = 0;
+let currentY = 0;
+
+
+document.addEventListener(
+    "mousemove",
+    (event) => {
+
+        /*
+         * Mouse position:
+         * -1 to +1
+         */
+
+        targetX =
+            (event.clientX /
+            window.innerWidth - 0.5);
+
+        targetY =
+            (event.clientY /
+            window.innerHeight - 0.5);
+
     }
+);
 
-    // Dynamic Peeling Fold Edge Highlight & Shadow
-    const foldGrad = ctx.createLinearGradient(revealX - 25, 0, revealX + 25, 0);
-    foldGrad.addColorStop(0, 'rgba(0,0,0,0.85)');
-    foldGrad.addColorStop(0.5, '#e5a93c');
-    foldGrad.addColorStop(1, 'rgba(0,0,0,0)');
 
-    ctx.fillStyle = foldGrad;
-    ctx.fillRect(0, 0, width, height);
+/* =========================================
+   ANIMATION
+========================================= */
 
-    ctx.restore();
-  }
+const clock =
+    new THREE.Clock();
 
-  revealBadge.innerText = `${Math.min(100, Math.round(revealProgress))}% REVEALED`;
+
+function animate() {
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    const time =
+        clock.getElapsedTime();
+
+
+    /*
+     * VERY SLOW EARTH ROTATION
+     *
+     * Small value = slower
+     */
+
+    earth.rotation.y += 0.00055;
+
+
+    /*
+     * Smooth mouse inertia
+     */
+
+    currentX +=
+        (targetX - currentX) * 0.025;
+
+    currentY +=
+        (targetY - currentY) * 0.025;
+
+
+    /*
+     * Mouse movement affects
+     * Earth smoothly
+     */
+
+    earthGroup.rotation.y =
+        currentX * 0.18;
+
+    earthGroup.rotation.x =
+        -currentY * 0.10;
+
+
+    /*
+     * Very subtle floating motion
+     */
+
+    earthGroup.position.y =
+        Math.sin(time * 0.35) * 0.025;
+
+
+    renderer.render(
+        scene,
+        camera
+    );
 }
 
-// Drag Interactions
-function updateDrag(clientX) {
-  const rect = canvas.getBoundingClientRect();
-  const x = clientX - rect.left;
-  let percent = (x / width) * 100;
-  if (percent < 0) percent = 0;
-  if (percent > 100) percent = 100;
 
-  revealProgress = percent;
-  renderStage();
+animate();
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+function resize() {
+
+    camera.aspect =
+        window.innerWidth /
+        window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
 }
 
-canvas.addEventListener('mousedown', (e) => {
-  isDragging = true;
-  updateDrag(e.clientX);
-});
 
-window.addEventListener('mousemove', (e) => {
-  if (!isDragging) return;
-  updateDrag(e.clientX);
-});
-
-window.addEventListener('mouseup', () => { isDragging = false; });
-
-canvas.addEventListener('touchstart', (e) => {
-  isDragging = true;
-  updateDrag(e.touches[0].clientX);
-});
-
-window.addEventListener('touchmove', (e) => {
-  if (!isDragging) return;
-  updateDrag(e.touches[0].clientX);
-});
-
-window.addEventListener('touchend', () => { isDragging = false; });
-
-// Initial Render
-setTimeout(resizeCanvas, 100);
+window.addEventListener(
+    "resize",
+    resize
+);
