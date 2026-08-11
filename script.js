@@ -1,35 +1,38 @@
-import * as THREE from "three";
-
-
 /* =========================================
-   BASIC SETUP
+   PHORCYSTY 3D EARTH
 ========================================= */
 
 const container =
     document.getElementById("earth-container");
 
+
+/* -----------------------------------------
+   SCENE
+----------------------------------------- */
+
 const scene =
     new THREE.Scene();
 
 
-/* =========================================
+/* -----------------------------------------
    CAMERA
-========================================= */
+----------------------------------------- */
 
 const camera =
     new THREE.PerspectiveCamera(
-        42,
-        window.innerWidth / window.innerHeight,
+        45,
+        container.clientWidth /
+        container.clientHeight,
         0.1,
         100
     );
 
-camera.position.z = 5.2;
+camera.position.z = 3;
 
 
-/* =========================================
+/* -----------------------------------------
    RENDERER
-========================================= */
+----------------------------------------- */
 
 const renderer =
     new THREE.WebGLRenderer({
@@ -42,66 +45,45 @@ renderer.setPixelRatio(
 );
 
 renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
+    container.clientWidth,
+    container.clientHeight
 );
 
-renderer.outputColorSpace =
-    THREE.SRGBColorSpace;
+renderer.outputEncoding =
+    THREE.sRGBEncoding;
 
-renderer.toneMapping =
-    THREE.ACESFilmicToneMapping;
-
-renderer.toneMappingExposure = 1.05;
-
-container.appendChild(
-    renderer.domElement
-);
+container.appendChild(renderer.domElement);
 
 
-/* =========================================
-   EARTH GROUP
-========================================= */
-
-const earthGroup =
-    new THREE.Group();
-
-scene.add(earthGroup);
-
-
-/* =========================================
-   EARTH TEXTURES
-========================================= */
-
-const loader =
-    new THREE.TextureLoader();
-
-const earthTexture =
-    loader.load(
-        "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
-    );
-
-const earthNormal =
-    loader.load(
-        "https://threejs.org/examples/textures/planets/earth_normal_2048.jpg"
-    );
-
-const earthSpecular =
-    loader.load(
-        "https://threejs.org/examples/textures/planets/earth_specular_2048.jpg"
-    );
-
-
-/* =========================================
+/* -----------------------------------------
    EARTH
-========================================= */
+----------------------------------------- */
 
 const earthGeometry =
     new THREE.SphereGeometry(
-        1.65,
+        1.25,
         96,
         96
     );
+
+
+const earthTexture =
+    new THREE.TextureLoader().load(
+        "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
+    );
+
+
+const earthNormal =
+    new THREE.TextureLoader().load(
+        "https://threejs.org/examples/textures/planets/earth_normal_2048.jpg"
+    );
+
+
+const earthSpecular =
+    new THREE.TextureLoader().load(
+        "https://threejs.org/examples/textures/planets/earth_specular_2048.jpg"
+    );
+
 
 const earthMaterial =
     new THREE.MeshPhongMaterial({
@@ -113,9 +95,12 @@ const earthMaterial =
         specularMap: earthSpecular,
 
         specular:
-            new THREE.Color(0x222222),
+            new THREE.Color(
+                0x333333
+            ),
 
-        shininess: 8
+        shininess: 12
+
     });
 
 
@@ -126,7 +111,77 @@ const earth =
     );
 
 
-earthGroup.add(earth);
+scene.add(earth);
+
+
+/* =========================================
+   CLOUDS
+========================================= */
+
+const cloudGeometry =
+    new THREE.SphereGeometry(
+        1.265,
+        96,
+        96
+    );
+
+
+const cloudTexture =
+    new THREE.TextureLoader().load(
+        "https://threejs.org/examples/textures/planets/earth_clouds_1024.png"
+    );
+
+
+const cloudMaterial =
+    new THREE.MeshPhongMaterial({
+
+        map: cloudTexture,
+
+        transparent: true,
+
+        opacity: 0.35,
+
+        depthWrite: false
+
+    });
+
+
+const clouds =
+    new THREE.Mesh(
+        cloudGeometry,
+        cloudMaterial
+    );
+
+
+scene.add(clouds);
+
+
+/* =========================================
+   LIGHTING
+========================================= */
+
+const ambientLight =
+    new THREE.AmbientLight(
+        0x7898ff,
+        0.35
+    );
+
+scene.add(ambientLight);
+
+
+const sunLight =
+    new THREE.DirectionalLight(
+        0xffffff,
+        2.2
+    );
+
+sunLight.position.set(
+    5,
+    2,
+    5
+);
+
+scene.add(sunLight);
 
 
 /* =========================================
@@ -135,7 +190,7 @@ earthGroup.add(earth);
 
 const atmosphereGeometry =
     new THREE.SphereGeometry(
-        1.72,
+        1.30,
         96,
         96
     );
@@ -144,13 +199,14 @@ const atmosphereGeometry =
 const atmosphereMaterial =
     new THREE.MeshBasicMaterial({
 
-        color: 0x3f9cff,
+        color: 0x4595ff,
 
         transparent: true,
 
-        opacity: 0.09,
+        opacity: 0.13,
 
         side: THREE.BackSide
+
     });
 
 
@@ -160,58 +216,11 @@ const atmosphere =
         atmosphereMaterial
     );
 
-
-earthGroup.add(atmosphere);
-
-
-/* =========================================
-   LIGHTING
-========================================= */
-
-const sunLight =
-    new THREE.DirectionalLight(
-        0xffffff,
-        3.2
-    );
-
-
-sunLight.position.set(
-    -4,
-    2,
-    5
-);
-
-scene.add(sunLight);
-
-
-const blueLight =
-    new THREE.PointLight(
-        0x2f75ff,
-        1.2,
-        10
-    );
-
-
-blueLight.position.set(
-    3,
-    -2,
-    -3
-);
-
-scene.add(blueLight);
-
-
-const ambientLight =
-    new THREE.AmbientLight(
-        0x304060,
-        0.28
-    );
-
-scene.add(ambientLight);
+scene.add(atmosphere);
 
 
 /* =========================================
-   MOUSE CONTROL
+   MOUSE MOVEMENT
 ========================================= */
 
 let targetX = 0;
@@ -225,30 +234,64 @@ document.addEventListener(
     "mousemove",
     (event) => {
 
-        /*
-         * Mouse position:
-         * -1 to +1
-         */
+        const normalizedX =
+            event.clientX /
+            window.innerWidth -
+            0.5;
 
-        targetX =
-            (event.clientX /
-            window.innerWidth - 0.5);
+        const normalizedY =
+            event.clientY /
+            window.innerHeight -
+            0.5;
+
 
         targetY =
-            (event.clientY /
-            window.innerHeight - 0.5);
+            normalizedX * 0.35;
+
+
+        targetX =
+            normalizedY * 0.18;
 
     }
 );
 
 
 /* =========================================
-   ANIMATION
+   RESIZE
 ========================================= */
 
-const clock =
-    new THREE.Clock();
+function resizeEarth() {
 
+    const width =
+        container.clientWidth;
+
+    const height =
+        container.clientHeight;
+
+
+    camera.aspect =
+        width / height;
+
+    camera.updateProjectionMatrix();
+
+
+    renderer.setSize(
+        width,
+        height
+    );
+
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeEarth
+);
+
+
+/* =========================================
+   ANIMATION
+========================================= */
 
 function animate() {
 
@@ -257,54 +300,59 @@ function animate() {
     );
 
 
-    const time =
-        clock.getElapsedTime();
+    /* Slow Earth rotation */
+
+    earth.rotation.y +=
+        0.0008;
 
 
-    /*
-     * VERY SLOW EARTH ROTATION
-     *
-     * Small value = slower
-     */
+    /* Clouds slightly faster */
 
-    earth.rotation.y += 0.00055;
+    clouds.rotation.y +=
+        0.0011;
 
 
-    /*
-     * Smooth mouse inertia
-     */
+    /* Smooth mouse movement */
 
     currentX +=
-        (targetX - currentX) * 0.025;
+        (targetX - currentX) *
+        0.035;
+
 
     currentY +=
-        (targetY - currentY) * 0.025;
+        (targetY - currentY) *
+        0.035;
 
 
-    /*
-     * Mouse movement affects
-     * Earth smoothly
-     */
-
-    earthGroup.rotation.y =
-        currentX * 0.18;
-
-    earthGroup.rotation.x =
-        -currentY * 0.10;
+    earth.rotation.x =
+        currentX;
 
 
-    /*
-     * Very subtle floating motion
-     */
+    earth.rotation.z =
+        currentY;
 
-    earthGroup.position.y =
-        Math.sin(time * 0.35) * 0.025;
+
+    clouds.rotation.x =
+        currentX;
+
+
+    clouds.rotation.z =
+        currentY;
+
+
+    atmosphere.rotation.x =
+        currentX;
+
+
+    atmosphere.rotation.z =
+        currentY;
 
 
     renderer.render(
         scene,
         camera
     );
+
 }
 
 
@@ -312,25 +360,35 @@ animate();
 
 
 /* =========================================
-   RESPONSIVE
+   TOOL CARD INTERACTION
 ========================================= */
 
-function resize() {
-
-    camera.aspect =
-        window.innerWidth /
-        window.innerHeight;
-
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
+const cards =
+    document.querySelectorAll(
+        ".tool-card"
     );
-}
 
 
-window.addEventListener(
-    "resize",
-    resize
-);
+cards.forEach(card => {
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            cards.forEach(item => {
+
+                item.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            card.classList.add(
+                "active"
+            );
+
+        }
+    );
+
+});
