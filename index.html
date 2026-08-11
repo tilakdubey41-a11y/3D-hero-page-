@@ -7,93 +7,182 @@
     <title>Phorcysty — AI Creative Editor</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 
 <body>
 
-    <!-- =========================================
-         HERO
-    ========================================== -->
+    <!-- SPACE BACKGROUND -->
+    <div class="space"></div>
 
-    <section class="hero">
+    <!-- NAVBAR -->
+    <header class="navbar">
 
-        <!-- Star field -->
-        <div class="stars"></div>
-        <div class="stars stars-2"></div>
+        <div class="logo">
+            <div class="logo-mark">✦</div>
+            <span>PHORCYSTY</span>
+        </div>
 
-        <!-- Ambient glow -->
-        <div class="space-glow"></div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#tools">Tools</a>
+            <a href="#features">Features</a>
+            <a href="#how">How It Works</a>
+            <a href="#about">About</a>
+        </nav>
 
-        <!-- 3D Earth -->
-        <div id="earth-container"></div>
+        <button class="nav-button">
+            Try Phorcysty
+            <span>→</span>
+        </button>
 
-        <!-- Optional dark vignette -->
-        <div class="vignette"></div>
+    </header>
 
-        <!-- Website content -->
-        <div class="hero-content">
 
-            <div class="brand">
-                <div class="brand-mark">✦</div>
-                <span>PHORCYSTY</span>
+    <!-- HERO -->
+    <main class="hero">
+
+        <!-- LEFT CONTENT -->
+        <section class="hero-content">
+
+            <div class="eyebrow">
+                <span>✦</span>
+                AI CREATIVE EDITOR
             </div>
 
-            <div class="hero-copy">
+            <h1>
+                Transform
+                <br>
+                Every
+                <span>Moment</span>
+            </h1>
 
-                <div class="eyebrow">
-                    AI CREATIVE EDITOR
-                </div>
+            <p>
+                Phorcysty is an AI creative editor that lets you
+                transform images and videos with stunning colors,
+                cinematic looks and creative styles.
+            </p>
 
-                <h1>
-                    Transform
-                    <span>Every Moment</span>
-                </h1>
+            <div class="hero-buttons">
 
-                <p>
-                    Color transfer, cinematic looks, style transfer
-                    and powerful AI tools for images and videos.
-                </p>
+                <button class="primary-button">
+                    Try Phorcysty
+                    <span>→</span>
+                </button>
 
-                <div class="hero-buttons">
-
-                    <button class="primary-btn">
-                        Try Phorcysty
-                        <span>→</span>
-                    </button>
-
-                    <button class="secondary-btn">
-                        Explore Tools
-                    </button>
-
-                </div>
+                <button class="secondary-button">
+                    <span class="play">▶</span>
+                    See How It Works
+                </button>
 
             </div>
+
+        </section>
+
+
+        <!-- 3D EARTH -->
+        <section class="earth-section">
+
+            <div class="earth-glow"></div>
+
+            <div id="earth-container"></div>
+
+            <div class="earth-label">
+                <span></span>
+                AI POWERED
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- TOOLS -->
+    <section class="tools-section" id="tools">
+
+        <div class="tool-card active">
+
+            <div class="tool-top">
+                <div class="tool-icon">▧</div>
+
+                <div>
+                    <h3>Image → Image</h3>
+                    <p>Transform colors & styles</p>
+                </div>
+
+                <div class="arrow">→</div>
+            </div>
+
+            <div class="tool-preview preview-one"></div>
 
         </div>
 
-        <!-- Bottom scroll indicator -->
-        <div class="scroll-indicator">
-            <span></span>
-            Explore
+
+        <div class="tool-card">
+
+            <div class="tool-top">
+
+                <div class="tool-icon blue">▶</div>
+
+                <div>
+                    <h3>Image → Video</h3>
+                    <p>Animate your images</p>
+                </div>
+
+                <div class="arrow">→</div>
+
+            </div>
+
+            <div class="tool-preview preview-two"></div>
+
+        </div>
+
+
+        <div class="tool-card">
+
+            <div class="tool-top">
+
+                <div class="tool-icon pink">▦</div>
+
+                <div>
+                    <h3>Video → Image</h3>
+                    <p>Extract beautiful frames</p>
+                </div>
+
+                <div class="arrow">→</div>
+
+            </div>
+
+            <div class="tool-preview preview-three"></div>
+
+        </div>
+
+
+        <div class="tool-card">
+
+            <div class="tool-top">
+
+                <div class="tool-icon orange">◉</div>
+
+                <div>
+                    <h3>Video → Video</h3>
+                    <p>Restyle your videos</p>
+                </div>
+
+                <div class="arrow">→</div>
+
+            </div>
+
+            <div class="tool-preview preview-four"></div>
+
         </div>
 
     </section>
 
 
-    <!-- =========================================
-         THREE.JS
-    ========================================== -->
-
-    <script type="importmap">
-    {
-        "imports": {
-            "three":
-            "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
-        }
-    }
-    </script>
-
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>
