@@ -1,50 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PHORCYSTY — Mustang 3D Cloth Reveal</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Phorcysty — AI Creative Editor</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <div class="studio-lighting"></div>
+    <!-- =========================================
+         HERO
+    ========================================== -->
 
-  <header>
-    <div class="brand">PHORCYSTY</div>
-    <div class="nav-status">
-      <span class="live-dot"></span> 3D CLOTH PHYSICS ENGINE
-    </div>
-  </header>
+    <section class="hero">
 
-  <section class="hero-section">
-    <div class="hero-tag">DRAG CURSOR TO REVEAL</div>
-    <h1>REDISCOVER THE <span>MUSTANG 1968</span></h1>
-    <p>Peel off the fabric cover to transform raw monochrome classic texture into real-time AI color-graded perfection.</p>
-  </section>
+        <!-- Star field -->
+        <div class="stars"></div>
+        <div class="stars stars-2"></div>
 
-  <div class="stage-container" id="stageContainer">
-    <div class="glass-viewport-card" id="viewportCard">
-      
-      <div class="card-bar">
-        <span class="studio-title">PHORCYSTY STUDIO // CLOTH REVEAL + COLOR TRANSFER</span>
-        <span class="drag-instruction">◄ DRAG TO PEEL SHEET ►</span>
-      </div>
+        <!-- Ambient glow -->
+        <div class="space-glow"></div>
 
-      <div class="viewport" id="viewport">
-        <canvas id="clothCanvas"></canvas>
+        <!-- 3D Earth -->
+        <div id="earth-container"></div>
 
-        <div class="reveal-badge" id="revealBadge">0% REVEALED</div>
-        <div class="tag tag-left">Phorcysty AI Graded</div>
-        <div class="tag tag-right">Silk Cover Sheet</div>
-      </div>
+        <!-- Optional dark vignette -->
+        <div class="vignette"></div>
 
-    </div>
-  </div>
+        <!-- Website content -->
+        <div class="hero-content">
 
-  <script src="script.js"></script>
+            <div class="brand">
+                <div class="brand-mark">✦</div>
+                <span>PHORCYSTY</span>
+            </div>
+
+            <div class="hero-copy">
+
+                <div class="eyebrow">
+                    AI CREATIVE EDITOR
+                </div>
+
+                <h1>
+                    Transform
+                    <span>Every Moment</span>
+                </h1>
+
+                <p>
+                    Color transfer, cinematic looks, style transfer
+                    and powerful AI tools for images and videos.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <button class="primary-btn">
+                        Try Phorcysty
+                        <span>→</span>
+                    </button>
+
+                    <button class="secondary-btn">
+                        Explore Tools
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Bottom scroll indicator -->
+        <div class="scroll-indicator">
+            <span></span>
+            Explore
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         THREE.JS
+    ========================================== -->
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three":
+            "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
+        }
+    }
+    </script>
+
+    <script type="module" src="script.js"></script>
+
 </body>
 </html>
